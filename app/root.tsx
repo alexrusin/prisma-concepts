@@ -9,8 +9,19 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+import createEmotionCache from "./createEmotionCache";
+import theme from "./theme";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CacheProvider } from "@emotion/react";
+
+const cache = createEmotionCache();
+
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
+  },
 ];
 
 export default function App() {
@@ -23,7 +34,13 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <CacheProvider value={cache}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Outlet />
+          </ThemeProvider>
+        </CacheProvider>
+
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
